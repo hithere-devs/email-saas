@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import React, { ComponentProps } from "react";
 
 const ThreadList = () => {
-  const { threads } = useThreads();
+  const { threads, threadId, setThreadId } = useThreads();
 
   const groupedThreads = threads?.reduce(
     (acc, thread) => {
@@ -24,10 +24,8 @@ const ThreadList = () => {
     {} as Record<string, typeof threads>,
   );
 
-  //   console.log(groupedThreads);
-
   return (
-    <div className="max-w-full overflow-y-scroll">
+    <div className="max-h-[calc(100vh-120px)] max-w-full overflow-y-scroll">
       <div className="flex flex-col gap-2 p-4 pt-0">
         {Object.entries(groupedThreads ?? {}).map(([date, threads]) => {
           return (
@@ -39,8 +37,12 @@ const ThreadList = () => {
                 return (
                   <button
                     key={thread.id}
+                    onClick={() => {
+                      setThreadId(thread.id);
+                    }}
                     className={cn(
                       "relative flex flex-col items-start gap-2 rounded-lg border p-3 text-left text-sm transition-all",
+                      { "bg-accent": thread.id === threadId },
                     )}
                   >
                     <div className="flex w-full flex-col gap-1">
