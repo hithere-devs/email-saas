@@ -16,6 +16,7 @@ export const authorizeAccountAccess = async (
       id: true,
       emailAddress: true,
       accessToken: true,
+      name: true,
     },
   });
 
@@ -116,5 +117,84 @@ export const accountRouter = createTRPCRouter({
           lastMessageDate: "desc",
         },
       });
+    }),
+
+  getSuggestions: privateProcedure
+    .input(z.object({ accountId: z.number() }))
+    .query(async ({ ctx, input }) => {
+      const account = await authorizeAccountAccess(
+        input.accountId,
+        ctx.auth.userId,
+      );
+
+      return await ctx.db.emailAddress.findMany({
+        where: {
+          accountId: account.id,
+        },
+        select: {
+          address: true,
+          name: true,
+        },
+      });
+    }),
+
+  getReplyDetails: privateProcedure
+    .input(z.object({ accountId: z.number(), threadId: z.string() }))
+    .query(async ({ ctx, input }) => {
+      const account = await authorizeAccountAccess(
+        input.accountId,
+        ctx.auth.userId,
+      );
+
+      const thread = await ctx.db.thread.findFirst({
+        where: {
+          id: input.threadId,
+          accountId: account.id,
+        },
+        include: {
+          emails: {
+            orderBy: {
+              sentAt: "asc",
+            },
+            select: {
+              from: true,
+              to: true,
+              cc: true,
+              bcc: true,
+              subject: true,
+              id: true,
+              sentAt: true,
+              internetMessageId: true,
+            },
+          },
+        },
+      });
+
+      if (!thread || thread.emails.length === 0) {
+        throw new Error("Thread not found");
+      }
+
+      const lastExrternalEmail = thread.emails
+        .reverse()
+        .find((e) => e.from.address !== account.emailAddress);
+
+      if (!lastExrternalEmail) {
+        throw new Error("No external email found");
+      }
+
+      return {
+        to: [
+          lastExrternalEmail.from,
+          ...lastExrternalEmail.to.filter(
+            (to) => to.address !== account.emailAddress,
+          ),
+        ],
+        cc: lastExrternalEmail.cc.filter(
+          (cc) => cc.address !== account.emailAddress,
+        ),
+        from: { name: account.name, address: account.emailAddress },
+        subject: lastExrternalEmail.subject,
+        id: lastExrternalEmail.internetMessageId,
+      };
     }),
 });
