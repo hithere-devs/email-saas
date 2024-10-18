@@ -14,6 +14,9 @@ import AccountSwitcher from "./account-switcher";
 import Sidebar from "./sidebar";
 import ThreadList from "./thread-list";
 import ThreadDisplay from "./thread-display";
+import { UserButton } from "@clerk/nextjs";
+import { ModeToggle } from "@/components/dark-mode-toggle";
+import ComposeButton from "./compose-button";
 
 type Props = {
   defaultLayout: number[] | undefined;
@@ -41,7 +44,7 @@ const Mail = ({
           defaultSize={defaultLayout[0]}
           collapsedSize={navCollapsedSize}
           collapsible={true}
-          minSize={15}
+          minSize={20}
           maxSize={40}
           onCollapse={() => setIsCollapsed(true)}
           onResize={() => setIsCollapsed(false)}
@@ -53,7 +56,7 @@ const Mail = ({
           <div className="flex h-full flex-1 flex-col">
             <div
               className={cn(
-                "flex h-[52px] items-center justify-between",
+                "flex h-[52px] items-center justify-center",
                 isCollapsed ? "h-[52px]" : "px-2",
               )}
             >
@@ -65,14 +68,28 @@ const Mail = ({
             <Sidebar isCollapsed={isCollapsed} />
             <div className="flex-1"></div>
             {/* AI */}
-            Ask AI
+            {/* Ask AI */}
+            <div
+              className={cn(
+                "flex flex-wrap-reverse items-center justify-between gap-2 p-4",
+                {
+                  "justify-center p-0 pb-4": isCollapsed,
+                },
+              )}
+            >
+              <div className="flex flex-wrap-reverse items-center justify-center gap-2">
+                <UserButton />
+                <ModeToggle />
+              </div>
+              <ComposeButton isCollapsed={isCollapsed} />
+            </div>
           </div>
         </ResizablePanel>
         <ResizableHandle withHandle />
         <ResizablePanel defaultSize={defaultLayout[1]} minSize={30}>
           <Tabs defaultValue="inbox">
             <div className="flex items-center px-4 py-2">
-              <h1>Inbox</h1>
+              <h1 className="font-bold">Inbox</h1>
               <TabsList className="ml-auto">
                 <TabsTrigger
                   value="inbox"
@@ -85,7 +102,7 @@ const Mail = ({
             </div>
             <Separator />
             {/* Search Bar */}
-            Search Bar
+            {/* Search Bar */}
             <TabsContent value="inbox">
               <ThreadList />
             </TabsContent>
