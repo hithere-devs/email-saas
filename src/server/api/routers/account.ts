@@ -2,6 +2,9 @@ import { z } from "zod";
 import { createTRPCRouter, privateProcedure } from "../trpc";
 import { db } from "@/server/db";
 import { Prisma } from "@prisma/client";
+import { sub } from "date-fns";
+import { emailAddressSchema } from "@/types";
+import { Account } from "@/lib/account";
 
 export const authorizeAccountAccess = async (
   accountId: number,
@@ -74,6 +77,9 @@ export const accountRouter = createTRPCRouter({
         input.accountId,
         ctx.auth.userId,
       );
+
+      const acc = new Account(account.accessToken);
+      acc.syncEmails().catch((e) => console.error(e));
 
       // sidebar filter
       let filter: Prisma.ThreadWhereInput = {};
@@ -196,5 +202,41 @@ export const accountRouter = createTRPCRouter({
         subject: lastExrternalEmail.subject,
         id: lastExrternalEmail.internetMessageId,
       };
+    }),
+
+  sendEmail: privateProcedure
+    .input(
+      z.object({
+        accountId: z.number(),
+        body: z.string(),
+        subject: z.string(),
+        from: emailAddressSchema,
+        cc: z.array(emailAddressSchema).optional(),
+        bcc: z.array(emailAddressSchema).optional(),
+        to: z.array(emailAddressSchema),
+        replyTo: emailAddressSchema,
+        inReplyTo: z.string().optional(),
+        threadId: z.string().optional(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const account = await authorizeAccountAccess(
+        input.accountId,
+        ctx.auth.userId,
+      );
+
+      const acc = new Account(account.accessToken);
+
+      await acc.sendEmail({
+        body: input.body,
+        subject: input.subject,
+        from: input.from,
+        cc: input.cc,
+        bcc: input.bcc,
+        to: input.to,
+        replyTo: input.replyTo,
+        inReplyTo: input.inReplyTo,
+        threadId: input.threadId,
+      });
     }),
 });

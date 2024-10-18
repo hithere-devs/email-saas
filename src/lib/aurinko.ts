@@ -38,16 +38,16 @@ export const exchangeCodeForToken = async (code: string) => {
         },
       },
     );
-    log.info(response.data);
+    console.log(response.data);
     return response.data as {
       accountId: number;
       accessToken: string;
     };
   } catch (error) {
     if (axios.isAxiosError(error)) {
-      log.error(error.response?.data);
+      console.log(error.response?.data);
     }
-    log.error(error);
+    console.log(error);
   }
 };
 
@@ -66,8 +66,8 @@ export const getAccountDetails = async (token: string) => {
     };
   } catch (error) {
     if (axios.isAxiosError(error)) {
-      log.error(error.response?.data);
+      console.log(error.response?.data);
     }
-    log.error(error);
+    console.log(error);
   }
 };

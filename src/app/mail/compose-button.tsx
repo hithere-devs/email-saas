@@ -3,10 +3,7 @@
 import React from "react";
 import {
   Drawer,
-  DrawerClose,
   DrawerContent,
-  DrawerDescription,
-  DrawerFooter,
   DrawerHeader,
   DrawerTitle,
   DrawerTrigger,
@@ -15,6 +12,9 @@ import { Button } from "@/components/ui/button";
 import { Pencil } from "lucide-react";
 import EmailEditor from "./email-editor";
 import { cn } from "@/lib/utils";
+import useThreads from "@/hooks/use-threads";
+import { api } from "@/trpc/react";
+import { toast } from "sonner";
 
 const ComposeButton = ({ isCollapsed }: { isCollapsed: boolean }) => {
   const [toValues, setToValues] = React.useState<
@@ -26,8 +26,42 @@ const ComposeButton = ({ isCollapsed }: { isCollapsed: boolean }) => {
 
   const [subject, setSubject] = React.useState("");
 
-  const handleSend = () => {
-    console.log("Send email");
+  const { account } = useThreads();
+
+  const sendEmail = api.account.sendEmail.useMutation();
+
+  const handleSend = async (value: string) => {
+    if (!account) return;
+    const accountId = parseInt(account.id.toString());
+    console.log(toValues);
+    sendEmail.mutate(
+      {
+        accountId,
+        threadId: undefined,
+        body: value,
+        subject,
+        from: {
+          name: account.name || "Me",
+          address: account.emailAddress || "me@example.com",
+        },
+        to: toValues.map((to) => ({ address: to.value, name: to.value || "" })),
+        cc: ccValues.map((cc) => ({ address: cc.value, name: cc.value || "" })),
+        replyTo: {
+          name: account.name || "Me",
+          address: account.emailAddress || "me@example.com",
+        },
+        inReplyTo: undefined,
+      },
+      {
+        onSuccess: () => {
+          toast.success("Email Sent!");
+        },
+        onError: (error) => {
+          console.log(error);
+          toast.error("Failed to send the email");
+        },
+      },
+    );
   };
 
   return (
@@ -50,7 +84,7 @@ const ComposeButton = ({ isCollapsed }: { isCollapsed: boolean }) => {
             subject={subject}
             setSubject={setSubject}
             handleSend={handleSend}
-            isSending={false}
+            isSending={sendEmail.isPending}
             to={toValues.map((v) => v.value)}
             defaultToolbarExpanded={true}
           />
