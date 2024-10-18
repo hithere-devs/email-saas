@@ -16,7 +16,8 @@ import ThreadList from "./thread-list";
 import ThreadDisplay from "./thread-display";
 import { UserButton } from "@clerk/nextjs";
 import { ModeToggle } from "@/components/dark-mode-toggle";
-import ComposeButton from "./compose-button";
+import dynamic from "next/dynamic";
+const ComposeButton = dynamic(() => import("./compose-button"), { ssr: false });
 
 type Props = {
   defaultLayout: number[] | undefined;

@@ -77,10 +77,10 @@ export const GET = async (req: NextRequest) => {
         userId,
       })
       .then((res) => {
-        log.info("Initial Sync Triggered", res.data);
+        console.log("Initial Sync Triggered", res.data);
       })
       .catch((err) => {
-        log.error("Initial Sync Trigger Failed", err);
+        console.log("Initial Sync Trigger Failed", err);
       }),
   );
 

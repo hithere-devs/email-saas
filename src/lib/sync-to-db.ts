@@ -8,7 +8,7 @@ export const syncEmailsToDataBase = async (
   emails: EmailMessage[],
   accountId: number,
 ) => {
-  log.info("Syncing emails to database", emails.length);
+  console.log("Syncing emails to database", emails.length);
 
   const limit = pLimit(10);
 
@@ -22,7 +22,7 @@ export const syncEmailsToDataBase = async (
       await saveEmails(email, accountId, 0);
     }
   } catch (error) {
-    log.error("syncEmailsToDatabase Error - ", error);
+    console.log("syncEmailsToDatabase Error - ", error);
   }
 };
 
@@ -73,7 +73,7 @@ async function saveEmails(
 
     const fromAddress = addressMap.get(email.from.address);
     if (!fromAddress) {
-      log.error("From Address Not Found", email.bodySnippet);
+      console.log("From Address Not Found", email.bodySnippet);
       return;
     }
 
@@ -260,7 +260,7 @@ async function upsertEmailAddress(address: EmailAddress, accountId: number) {
       });
     }
   } catch (error) {
-    log.error("Failed To Upser Email Address", error);
+    console.log("Failed To Upser Email Address", error);
     return null;
   }
 }

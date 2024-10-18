@@ -8,7 +8,7 @@ export const POST = async (req: Request) => {
 
   if (resp.type === "user.created") {
     const { data, type } = resp;
-    log.info("Clerk Webhook Recieved of Type", type);
+    console.log("Clerk Webhook Recieved of Type", type);
 
     const id = data.id;
     const emailAddress = data.email_addresses[0].email_address;
@@ -22,7 +22,7 @@ export const POST = async (req: Request) => {
 
     if (exisitingUser) {
       const message = "User already exists";
-      log.error(message);
+      console.log(message);
       return new Response(message, { status: 200 });
     }
 

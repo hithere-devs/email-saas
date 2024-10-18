@@ -9,7 +9,7 @@ const Mail = dynamic(() => import("./mail"), { ssr: false });
 const MailDashboard = () => {
   return (
     <>
-      <div className="absolute bottom-4 left-4"></div>
+      {/* <div className="absolute bottom-4 left-4"></div> */}
       <Mail
         defaultLayout={[20, 32, 48]}
         defaultCollapsed={false}
