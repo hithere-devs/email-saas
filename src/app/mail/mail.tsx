@@ -17,6 +17,7 @@ import ThreadDisplay from "./thread-display";
 import { UserButton } from "@clerk/nextjs";
 import { ModeToggle } from "@/components/dark-mode-toggle";
 import dynamic from "next/dynamic";
+import SearchBar from "./search-bar";
 const ComposeButton = dynamic(() => import("./compose-button"), { ssr: false });
 
 type Props = {
@@ -103,7 +104,7 @@ const Mail = ({
             </div>
             <Separator />
             {/* Search Bar */}
-            {/* Search Bar */}
+            <SearchBar />
             <TabsContent value="inbox">
               <ThreadList />
             </TabsContent>

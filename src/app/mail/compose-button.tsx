@@ -33,7 +33,6 @@ const ComposeButton = ({ isCollapsed }: { isCollapsed: boolean }) => {
   const handleSend = async (value: string) => {
     if (!account) return;
     const accountId = parseInt(account.id.toString());
-    console.log(toValues);
     sendEmail.mutate(
       {
         accountId,
@@ -57,7 +56,7 @@ const ComposeButton = ({ isCollapsed }: { isCollapsed: boolean }) => {
           toast.success("Email Sent!");
         },
         onError: (error) => {
-          console.log(error);
+          console.error(error);
           toast.error("Failed to send the email");
         },
       },

@@ -42,7 +42,6 @@ const useAccountSwitching = () => {
           name: account.name,
           parent: "accountsAction",
           perform: () => {
-            console.log("perform", account.id);
             setAccountId(account.id.toString());
           },
           keywords: [account.name, account.emailAddress].filter(

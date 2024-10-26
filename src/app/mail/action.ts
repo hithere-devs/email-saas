@@ -46,8 +46,6 @@ export const generateEmail = async (context: string, prompt: string) => {
 
 export async function generate(input: string) {
   const stream = createStreamableValue("");
-
-  console.log("input", input);
   (async () => {
     const { textStream } = await streamText({
       model: openai("gpt-3.5-turbo"),
