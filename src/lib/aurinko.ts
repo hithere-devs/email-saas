@@ -2,7 +2,6 @@
 
 import { auth } from "@clerk/nextjs/server";
 import axios from "axios";
-import { log } from "./logger";
 
 const { AURINKO_CLIENT_ID, NEXT_PUBLIC_URL, AURINKO_CLIENT_SECRET } =
   process.env;
@@ -38,16 +37,15 @@ export const exchangeCodeForToken = async (code: string) => {
         },
       },
     );
-    console.log(response.data);
     return response.data as {
       accountId: number;
       accessToken: string;
     };
   } catch (error) {
     if (axios.isAxiosError(error)) {
-      console.log(error.response?.data);
+      console.error(error.response?.data);
     }
-    console.log(error);
+    console.error(error);
   }
 };
 
@@ -66,8 +64,8 @@ export const getAccountDetails = async (token: string) => {
     };
   } catch (error) {
     if (axios.isAxiosError(error)) {
-      console.log(error.response?.data);
+      console.error(error.response?.data);
     }
-    console.log(error);
+    console.error(error);
   }
 };

@@ -80,7 +80,7 @@ export const GET = async (req: NextRequest) => {
         console.log("Initial Sync Triggered", res.data);
       })
       .catch((err) => {
-        console.log("Initial Sync Trigger Failed", err);
+        console.error("Initial Sync Trigger Failed", err);
       }),
   );
 

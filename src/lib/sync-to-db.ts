@@ -3,26 +3,30 @@ import { log } from "./logger";
 import pLimit from "p-limit";
 import { db } from "@/server/db";
 import { Prisma } from "@prisma/client";
+import { OramaClient } from "./orama";
+import { turndown } from "./turndown";
 
 export const syncEmailsToDataBase = async (
   emails: EmailMessage[],
   accountId: number,
 ) => {
-  console.log("Syncing emails to database", emails.length);
-
-  const limit = pLimit(10);
+  const orama = new OramaClient(accountId);
 
   try {
-    // await Promise.all(
-    //   emails.map((email, index) =>
-    //     limit(() => saveEmails(email, accountId, index)),
-    //   ),
-    // );
     for (const email of emails) {
       await saveEmails(email, accountId, 0);
+      await orama.insert({
+        subject: email.subject,
+        body: turndown.turndown(email.body as string),
+        rawBody: email.bodySnippet || "",
+        from: email.from.address,
+        to: email.to.map((t) => t.address),
+        sentAt: email.sentAt,
+        threadId: email.threadId,
+      });
     }
   } catch (error) {
-    console.log("syncEmailsToDatabase Error - ", error);
+    console.error("syncEmailsToDatabase Error - ", error);
   }
 };
 
@@ -73,7 +77,7 @@ async function saveEmails(
 
     const fromAddress = addressMap.get(email.from.address);
     if (!fromAddress) {
-      console.log("From Address Not Found", email.bodySnippet);
+      console.error("From Address Not Found", email.bodySnippet);
       return;
     }
 
@@ -225,9 +229,9 @@ async function saveEmails(
     }
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
-      console.log(`Prisma error for email ${email.id}: ${error.message}`);
+      console.error(`Prisma error for email ${email.id}: ${error.message}`);
     } else {
-      console.log(`Unknown error for email ${email.id}: ${error}`);
+      console.error(`Unknown error for email ${email.id}: ${error}`);
     }
   }
 }
@@ -260,7 +264,7 @@ async function upsertEmailAddress(address: EmailAddress, accountId: number) {
       });
     }
   } catch (error) {
-    console.log("Failed To Upser Email Address", error);
+    console.error("Failed To Upser Email Address", error);
     return null;
   }
 }
@@ -291,6 +295,6 @@ async function upsertAttachment(emailId: string, attachment: EmailAttachment) {
       },
     });
   } catch (error) {
-    console.log(`Failed to upsert attachment for email ${emailId}: ${error}`);
+    console.error(`Failed to upsert attachment for email ${emailId}: ${error}`);
   }
 }

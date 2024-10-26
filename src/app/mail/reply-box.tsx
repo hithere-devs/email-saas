@@ -63,7 +63,7 @@ const Component = ({
           toast.success("Email Sent!");
         },
         onError: (error) => {
-          console.log(error);
+          console.error(error);
           toast.error("Failed to send the email");
         },
       },

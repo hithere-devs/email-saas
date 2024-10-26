@@ -5,6 +5,7 @@ import { Prisma } from "@prisma/client";
 import { sub } from "date-fns";
 import { emailAddressSchema } from "@/types";
 import { Account } from "@/lib/account";
+import { OramaClient } from "@/lib/orama";
 
 export const authorizeAccountAccess = async (
   accountId: number,
@@ -238,5 +239,26 @@ export const accountRouter = createTRPCRouter({
         inReplyTo: input.inReplyTo,
         threadId: input.threadId,
       });
+    }),
+
+  searchEmails: privateProcedure
+    .input(
+      z.object({
+        accountId: z.number(),
+        query: z.string(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const account = await authorizeAccountAccess(
+        input.accountId,
+        ctx.auth.userId,
+      );
+
+      if (!account) throw new Error("Account not found");
+      const accId = parseInt(account.id.toString());
+
+      const orama = new OramaClient(accId);
+      const results = await orama.search({ term: input.query });
+      return results;
     }),
 });

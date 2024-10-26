@@ -106,9 +106,9 @@ export class Account {
       };
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        console.log(error.response?.data);
+        console.error(error.response?.data);
       }
-      console.log(error);
+      console.error(error);
     }
   }
 
@@ -147,9 +147,10 @@ export class Account {
     }
 
     try {
-      await syncEmailsToDataBase(allEmails, parseInt(account.id.toString()));
+      const accId = parseInt(account.id.toString());
+      await syncEmailsToDataBase(allEmails, accId);
     } catch (error) {
-      console.log("Error during sync: ", error);
+      console.error("Error during sync: ", error);
     }
 
     await db.account.update({
@@ -191,18 +192,6 @@ export class Account {
     threadId?: string;
   }) {
     try {
-      console.log(3, {
-        from,
-        subject,
-        body,
-        inReplyTo,
-        references,
-        to,
-        cc,
-        bcc,
-        replyTo: [replyTo],
-        threadId,
-      });
       const response = await axios.post(
         "https://api.aurinko.io/v1/email/messages",
         {
@@ -226,13 +215,12 @@ export class Account {
           },
         },
       );
-      //   console.log(response.data);
       return response.data;
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        console.log(error.response?.data);
+        console.error(error.response?.data);
       }
-      console.log(error);
+      console.error(error);
     }
   }
 }
