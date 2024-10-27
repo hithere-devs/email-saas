@@ -18,6 +18,7 @@ import { UserButton } from "@clerk/nextjs";
 import { ModeToggle } from "@/components/dark-mode-toggle";
 import dynamic from "next/dynamic";
 import SearchBar from "./search-bar";
+import AskAI from "./ask-ai";
 const ComposeButton = dynamic(() => import("./compose-button"), { ssr: false });
 
 type Props = {
@@ -70,7 +71,7 @@ const Mail = ({
             <Sidebar isCollapsed={isCollapsed} />
             <div className="flex-1"></div>
             {/* AI */}
-            {/* Ask AI */}
+            <AskAI isCollapsed={isCollapsed} />
             <div
               className={cn(
                 "flex flex-wrap-reverse items-center justify-between gap-2 p-4",
