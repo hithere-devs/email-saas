@@ -14,10 +14,13 @@ export function ModeToggle() {
       variant="outline"
       size="icon"
       onClick={() => {
+        console.log(theme);
         if (theme === "light") {
           setTheme("dark");
         } else if (theme === "dark") {
           setTheme("light");
+        } else if (theme === "system") {
+          setTheme("dark");
         }
       }}
     >
