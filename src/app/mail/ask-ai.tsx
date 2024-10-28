@@ -4,6 +4,7 @@ import { cn } from "@/lib/utils";
 import { Send, SparklesIcon } from "lucide-react";
 import { useChat } from "ai/react";
 import useThreads from "@/hooks/use-threads";
+import PremiumBanner from "./premium-banner";
 
 const AskAI = ({ isCollapsed }: { isCollapsed: boolean }) => {
   if (isCollapsed) return null;
@@ -23,6 +24,8 @@ const AskAI = ({ isCollapsed }: { isCollapsed: boolean }) => {
 
   return (
     <div className="max-w-[390px] p-2">
+      <PremiumBanner />
+      <div className="h-2"></div>
       <motion.div className="flex flex-1 flex-col items-end rounded-lg bg-gray-100 p-4 pb-4 shadow-inner dark:bg-gray-900">
         <div
           className="flex max-h-[50vh] w-full flex-col gap-2 overflow-y-scroll"
@@ -78,6 +81,7 @@ const AskAI = ({ isCollapsed }: { isCollapsed: boolean }) => {
                   className="rounded-md bg-gray-800 px-2 py-1 text-xs text-gray-200"
                   onClick={() => {
                     handleInputChange({
+                      // @ts-ignore
                       target: { value: "What can I ask AI?" },
                     });
                   }}
@@ -88,6 +92,7 @@ const AskAI = ({ isCollapsed }: { isCollapsed: boolean }) => {
                   className="rounded-md bg-gray-800 px-2 py-1 text-xs text-gray-200"
                   onClick={() => {
                     handleInputChange({
+                      // @ts-ignore
                       target: { value: "When is my next flight?" },
                     });
                   }}
@@ -98,6 +103,7 @@ const AskAI = ({ isCollapsed }: { isCollapsed: boolean }) => {
                   className="rounded-md bg-gray-800 px-2 py-1 text-xs text-gray-200"
                   onClick={() => {
                     handleInputChange({
+                      // @ts-ignore
                       target: { value: "When is my next meeting?" },
                     });
                   }}
