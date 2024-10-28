@@ -3,7 +3,7 @@
 import { getAurinkoAuthUrl } from "@/lib/aurinko";
 import { Button } from "./ui/button";
 
-const LinkAccountButton = () => {
+const LinkGoogleAccountButton = () => {
   return (
     <Button
       onClick={async () => {
@@ -11,9 +11,9 @@ const LinkAccountButton = () => {
         window.location.href = authUrl;
       }}
     >
-      Link Account
+      Link Gmail Account
     </Button>
   );
 };
 
-export default LinkAccountButton;
+export default LinkGoogleAccountButton;

@@ -45,7 +45,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
 
     const response = await openai.createChatCompletion({
       model: "gpt-3.5-turbo",
-      messages: [prompt, ...messages.filter((m: any) => m.role === "user")],
+      messages: [prompt, ...messages.filter((m: Message) => m.role === "user")],
       stream: true,
     });
 
