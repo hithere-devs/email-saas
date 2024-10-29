@@ -7,8 +7,10 @@ const LinkGoogleAccountButton = () => {
   return (
     <Button
       onClick={async () => {
-        const authUrl = await getAurinkoAuthUrl("Google");
-        window.location.href = authUrl;
+        const googleAuthUrl = await getAurinkoAuthUrl("Google");
+        const officeAuthUrm = await getAurinkoAuthUrl("Office365");
+
+        window.location.href = googleAuthUrl;
       }}
     >
       Link Gmail Account
