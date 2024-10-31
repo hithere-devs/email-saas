@@ -12,6 +12,10 @@ const config = {
   eslint: {
     ignoreDuringBuilds: true,
   },
+
+  images: {
+    domains: ["cdn.dribbble.com"],
+  },
 };
 
 export default config;
