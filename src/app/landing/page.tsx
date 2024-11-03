@@ -1,31 +1,19 @@
 "use client";
 import { ModeToggle } from "@/components/dark-mode-toggle";
 import { Button } from "@/components/ui/button";
-import { LampContainer } from "@/components/ui/lamp";
-import { motion } from "framer-motion";
-import {
-  DollarSign,
-  FileChartColumnIncreasing,
-  Home,
-  Speaker,
-  SpeakerIcon,
-  User,
-  Volume,
-  Volume2,
-} from "lucide-react";
 import { useTheme } from "next-themes";
-import { useEffect } from "react";
 import { Features } from "./features";
 import { CTA } from "./cta";
+import GetStartedButton from "./get-started";
 
 export default function Page() {
   const { theme, setTheme } = useTheme();
 
   return (
-    <div className="flex min-h-[100vh] w-[100vw] flex-col px-8 dark:bg-black">
+    <div className="flex min-h-[100vh] max-w-[100vw] flex-col px-0 dark:bg-black sm:px-8">
       {/* Header */}
 
-      <div className="fixed z-50 flex h-[10vh] w-[100vw] items-center justify-between pr-14 dark:bg-black">
+      <div className="fixed z-50 flex h-[10vh] w-[100vw] items-center justify-between dark:bg-black sm:pr-14">
         <div className="px-10">
           {theme === "light" || theme === undefined ? (
             <svg
@@ -83,27 +71,26 @@ export default function Page() {
         </ul> */}
         <div className="flex items-center gap-6 px-10">
           <ModeToggle />
-          <Button>Get Started</Button>
+          <GetStartedButton />
         </div>
       </div>
 
       <div className="mt-[5.5rem] border-none bg-gray-200 dark:bg-black">
         {/* Main Hero Content */}
         <div className="flex flex-col items-center justify-center text-center">
-          <div className="dark:bg-grid-white/[0.2] bg-grid-black/[0.2] relative flex w-full items-center justify-center bg-white dark:bg-black">
-            {/* Radial gradient for the container to give a faded look */}
+          <div className="relative flex w-full items-center justify-center bg-white bg-grid-black/[0.2] dark:bg-black dark:bg-grid-white/[0.2]">
             <div className="pointer-events-none absolute inset-0 flex items-center justify-center bg-white [mask-image:radial-gradient(ellipse_at_center,transparent_10%,black)] dark:bg-black"></div>
             <div className="relative z-20 bg-gradient-to-b from-neutral-200 to-neutral-500 bg-clip-text py-8">
-              <h1 className="text-[3.5rem] font-semibold leading-tight">
+              <h1 className="text-[1.5rem] font-semibold leading-tight sm:text-[3.5rem]">
                 Let's Reimagine the Way <br /> You Manage Your Inbox
               </h1>
-              <p className="m-auto w-[45rem] py-4 text-gray-500">
+              <p className="m-auto w-[20rem] py-4 text-[0.8rem] text-gray-500 sm:w-[45rem]">
                 Stay on top of your emails effortlessly with smart automation,
                 personalized AI features, and all the tools you need in one
                 sleek, intuitive platform. Make your inbox work for you.
               </p>
               <div className="py-4">
-                <Button size={"lg"}>Get Started</Button>
+                <GetStartedButton size={"lg"} />
               </div>
               <div className="py-3">
                 <img src="/hero.png" alt="Hero Image" />
@@ -187,10 +174,10 @@ export default function Page() {
         <CTA />
 
         {/* Footer */}
-        <div className="flex w-full items-center justify-center py-10">
+        <div className="flex w-full items-center justify-center py-10 text-center">
           <p>
-            built by{" "}
-            <a href="https://x.com/hithere_devs">@hithere_devs &copy; 2025</a>
+            built by <a href="https://x.com/hithere_devs">@hithere_devs</a>{" "}
+            &copy; 2025
           </p>
         </div>
       </div>

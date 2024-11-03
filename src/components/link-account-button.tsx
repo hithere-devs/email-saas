@@ -3,19 +3,22 @@
 import { getAurinkoAuthUrl } from "@/lib/aurinko";
 import { Button } from "./ui/button";
 
-const LinkGoogleAccountButton = () => {
+type Props = {
+  type: "Google" | "Office365";
+};
+
+const LinkAccountButton = ({ type }: Props) => {
   return (
     <Button
       onClick={async () => {
-        const googleAuthUrl = await getAurinkoAuthUrl("Google");
-        const officeAuthUrm = await getAurinkoAuthUrl("Office365");
+        const googleAuthUrl = await getAurinkoAuthUrl(type);
 
         window.location.href = googleAuthUrl;
       }}
     >
-      Link Gmail Account
+      Link {type === "Google" ? "Gmail" : "Microsoft"} Account
     </Button>
   );
 };
 
-export default LinkGoogleAccountButton;
+export default LinkAccountButton;

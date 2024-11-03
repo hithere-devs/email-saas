@@ -119,7 +119,7 @@ export const Header = () => {
       style={{
         translateY,
       }}
-      className="relative left-0 top-0 mx-auto w-full max-w-7xl px-4 py-20 md:py-40"
+      className="relative left-0 top-0 mx-auto w-full max-w-7xl px-4 py-60 md:py-40"
     >
       <h1 className="text-2xl font-bold dark:text-white md:text-7xl">
         Ultimate Featurefull <br />
