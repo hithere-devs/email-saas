@@ -11,6 +11,7 @@ import { getAurinkoAuthUrl } from "@/lib/aurinko";
 import { cn } from "@/lib/utils";
 import { api } from "@/trpc/react";
 import { PlusIcon } from "@radix-ui/react-icons";
+import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { useLocalStorage } from "usehooks-ts";
 
@@ -20,6 +21,7 @@ type Props = {
 
 const AccountSwitcher = ({ isCollapsed }: Props) => {
   const { data } = api.account.getAccounts.useQuery();
+  const router = useRouter();
 
   const [accountId, setAccountId] = useLocalStorage("accountId", "");
 
@@ -62,10 +64,9 @@ const AccountSwitcher = ({ isCollapsed }: Props) => {
           ))}
           <div
             onClick={async () => {
-              const authUrl = await getAurinkoAuthUrl("Google");
-              window.location.href = authUrl;
+              router.push("/");
             }}
-            className="relative flex w-full cursor-pointer items-center rounded-sm py-1.5 pl-2 pr-8 text-sm outline-none hover:bg-gray-50 focus:bg-accent"
+            className="focus:bg-accen relative flex w-full cursor-pointer items-center rounded-sm py-1.5 pl-2 pr-8 text-sm outline-none hover:bg-gray-50 dark:hover:bg-zinc-800"
           >
             <PlusIcon className="mr-1 size-4" />
             Add Account
