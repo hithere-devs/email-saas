@@ -25,7 +25,7 @@ const TagInput = ({ placeholder, label, onChange, value }: Props) => {
 
   const options = suggestions?.map((s) => ({
     label: (
-      <span className="flex items-center gap-2">
+      <span className="flex items-center gap-2 dark:text-white">
         <Avatar size="25" name={s.address} textSizeRatio={2} round />
         {s.address}
       </span>
@@ -56,10 +56,16 @@ const TagInput = ({ placeholder, label, onChange, value }: Props) => {
             return "!border-none !outline-none !ring-0 !shadow-none focus:border-none focus:outline-none focus:ring-0 focus:shadow-none dark:bg-transparent";
           },
           multiValue: () => {
-            return "dark:!bg-gray-700";
+            return "dark:bg-gray-700";
           },
           multiValueLabel: () => {
             return "dark:text-white dark:bg-gray-700 rounded-md";
+          },
+          menuList: () => {
+            return "dark:bg-gray-800";
+          },
+          option: () => {
+            return "dark:bg-gray-800 hover:dark:bg-gray-500";
           },
         }}
       />
