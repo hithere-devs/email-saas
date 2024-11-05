@@ -1,21 +1,28 @@
-
-
 # Email SaaS
 
-Building this for using personally like a Superhuman mail client. Including AI features that could be run from my local LLMs.
+Building this for using like a Superhuman mail client. Including AI features that could also be run from my local LLMs.
 
 ## Tech Stack
 
 This project is built using the [T3 Stack](https://create.t3.gg/) and bootstrapped with `create-t3-app`. The main technologies used are:
 
 - [Next.js](https://nextjs.org)
-- [Clerk.js]()
 - [Prisma](https://prisma.io)
 - [PostgreSQL]()
+- [ShadCN]()
 - [Tailwind CSS](https://tailwindcss.com)
+- [Framer Motion]()
 - [tRPC](https://trpc.io)
+- [Clerk.js]()
 - [Aurinko]()
 - [Sonner]()
+- [Orama]()
+- [OpenAI]()
+- [Logtail]()
+- [Jotai]()
+- [KBar]()
+- [Turndown]()
+- [Zod]()
 
 ## Features
 
@@ -51,10 +58,6 @@ To get started with the project, follow these steps:
 5. **Open your browser:**
    Navigate to [http://localhost:3000](http://localhost:3000) to see the application in action.
 
-## Deployment
-
-Follow our deployment guides for [Vercel](https://create.t3.gg/en/deployment/vercel), [Netlify](https://create.t3.gg/en/deployment/netlify), and [Docker](https://create.t3.gg/en/deployment/docker).
-
 ## Learn More
 
 To learn more about the [T3 Stack](https://create.t3.gg/), take a look at the following resources:
@@ -65,4 +68,4 @@ To learn more about the [T3 Stack](https://create.t3.gg/), take a look at the fo
 
 ---
 
-Feel free to update this README with more specific details about your project.
+Feel free to update this README with more specific details about this project.
