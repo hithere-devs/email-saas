@@ -2,6 +2,44 @@
 
 Building this for using like a Superhuman mail client. Including AI features that could also be run from my local LLMs.
 
+## Features
+
+1. AI Writing Assistant
+    * Smart compose suggestions while typing
+    * One-click email response generation
+    * Tone adjustment (formal, casual, friendly)
+2. Keyboard-First Navigation
+    * Vim-style keyboard shortcuts
+    * Command palette for quick actions (⌘+K)
+    * Quick thread switching (⌘+T)
+3. Search & Filter
+    * Natural language search queries
+    * Advanced filtering options
+    * AI-powered search suggestions
+4. Productivity Features
+    * Templates with AI customization
+    * Batch email processing
+    * Split inbox views
+5. Privacy & Security
+    * End-to-end encryption
+    * Phishing detection
+    * Sensitive content warnings
+
+#### Features In Progress:
+
+1. AI Summary & Insights
+    * One-click thread summaries
+    * Key action items extraction
+    * Important dates/deadlines detection
+2. Smart Inbox Organization
+    * AI-powered email categorization
+    * Priority inbox with intelligent sorting
+    * Thread grouping and conversation view
+3. Email Scheduling & Follow-up
+    * Smart scheduling suggestions
+    * Automated follow-up reminders
+    * Time-zone aware sending
+
 ## Tech Stack
 
 This project is built using the [T3 Stack](https://create.t3.gg/) and bootstrapped with `create-t3-app`. The main technologies used are:
@@ -23,14 +61,6 @@ This project is built using the [T3 Stack](https://create.t3.gg/) and bootstrapp
 - [KBar]()
 - [Turndown]()
 - [Zod]()
-
-## Features
-
-- AI-powered functionalities using local language models
-- PostgreSQL for data storage
-- Prisma ORM for database management
-- Betterstack Logging integration
-- Authentication via Clerk
 
 ## Getting Started
 
