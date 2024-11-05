@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 
 type Props = {
   size?: "default" | "lg" | "sm" | "icon" | null | undefined;
+  user?: any;
 };
 
 const GetStartedButton = (props: Props) => {
@@ -16,7 +17,7 @@ const GetStartedButton = (props: Props) => {
 
   return (
     <Button onClick={handleRedirect} size={props.size || "default"}>
-      Get Started
+      {props.user ? "Dashboard" : "Get Started"}
     </Button>
   );
 };

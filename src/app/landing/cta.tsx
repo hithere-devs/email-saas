@@ -1,7 +1,7 @@
 "use client";
 import { TypewriterEffectSmooth } from "@/components/ui/typewriter-effect";
 import { useRouter } from "next/navigation";
-export function CTA() {
+export function CTA({ user }: { user: any }) {
   const router = useRouter();
   const words = [
     {
@@ -41,7 +41,7 @@ export function CTA() {
           onClick={handleRouting}
           className="h-10 w-40 rounded-xl border border-transparent bg-black text-sm text-white dark:border-white"
         >
-          Join Now
+          {user ? "Explore" : "Join Now"}
         </button>
         {/* <button className="h-10 w-40 rounded-xl border border-black bg-white text-sm text-black">
           Sign Up

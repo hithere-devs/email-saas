@@ -12,7 +12,7 @@ import { cn } from "@/lib/utils";
 import { api } from "@/trpc/react";
 import { PlusIcon } from "@radix-ui/react-icons";
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useLocalStorage } from "usehooks-ts";
 
 type Props = {
@@ -26,6 +26,10 @@ const AccountSwitcher = ({ isCollapsed }: Props) => {
   const [accountId, setAccountId] = useLocalStorage("accountId", "");
 
   if (!data) return null;
+  // when no accounts connected redirect to account linking page
+  if (data.length <= 0) {
+    router.push("/link");
+  }
 
   return (
     <div>
@@ -41,9 +45,8 @@ const AccountSwitcher = ({ isCollapsed }: Props) => {
           <SelectValue placeholder={"Select an account"}>
             <span className={cn({ hidden: !isCollapsed })}>
               {
-                data.find(
-                  (account) => Number(account.id) === parseInt(accountId),
-                )?.emailAddress[0]
+                data.find((account) => account.id.toString() === accountId)
+                  ?.emailAddress[0]
               }
             </span>
             <span className={cn({ hidden: isCollapsed, "ml-2": true })}>
@@ -64,7 +67,7 @@ const AccountSwitcher = ({ isCollapsed }: Props) => {
           ))}
           <div
             onClick={async () => {
-              router.push("/");
+              router.push("/link");
             }}
             className="focus:bg-accen relative flex w-full cursor-pointer items-center rounded-sm py-1.5 pl-2 pr-8 text-sm outline-none hover:bg-gray-50 dark:hover:bg-zinc-800"
           >

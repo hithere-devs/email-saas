@@ -6,11 +6,16 @@ import { ModeToggle } from "@/components/dark-mode-toggle";
 import { UserButton } from "@clerk/nextjs";
 import ComposeButton from "./compose-button";
 import { useEffect, useState } from "react";
+import { api } from "@/trpc/react";
+import { useRouter } from "next/navigation";
+import { Spinner } from "@/components/ui/spinner";
 
 const Mail = dynamic(() => import("./mail"), { ssr: false });
 
 const MailDashboard = () => {
   const [isDesktop, setIsDesktop] = useState(true);
+  const { data: accounts, isLoading } = api.account.getAccounts.useQuery();
+  const router = useRouter();
 
   useEffect(() => {
     const handleResize = () => {
@@ -23,6 +28,20 @@ const MailDashboard = () => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  useEffect(() => {
+    if (accounts?.length === 0) {
+      router.push("/link");
+    }
+  }, [accounts]);
+
+  if (isLoading) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <Spinner />
+      </div>
+    );
+  }
+
   if (!isDesktop) {
     return (
       <div className="flex h-[70vh] items-center justify-center text-center">
@@ -33,7 +52,6 @@ const MailDashboard = () => {
 
   return (
     <>
-      {/* <div className="absolute bottom-4 left-4"></div> */}
       <Mail
         defaultLayout={[20, 32, 48]}
         defaultCollapsed={false}
