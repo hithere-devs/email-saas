@@ -8,6 +8,7 @@ import { CTA } from "./landing/cta";
 import GetStartedButton from "./landing/get-started";
 
 import { ModeToggle } from "@/components/dark-mode-toggle";
+import Footer from "./footer";
 
 export default function Home() {
   const { theme } = useTheme();
@@ -17,7 +18,7 @@ export default function Home() {
     <div className="flex min-h-[100vh] max-w-[100vw] flex-col px-0 dark:bg-black sm:px-8">
       {/* Header */}
 
-      <div className="fixed z-50 flex h-[10vh] w-[100vw] items-center justify-between dark:bg-black sm:pr-14">
+      <div className="fixed z-50 flex h-[10vh] w-[100vw] items-center justify-between bg-white dark:bg-black sm:pr-14">
         <div className="px-10">
           {theme === "light" ? (
             <img src="/logo-64.png" className="h-10 w-10" alt="Logo" />
@@ -131,12 +132,7 @@ export default function Home() {
         <CTA user={user} />
 
         {/* Footer */}
-        <div className="flex w-full items-center justify-center py-10 text-center">
-          <p>
-            built by <a href="https://x.com/hithere_devs">@hithere_devs</a>{" "}
-            &copy; 2025
-          </p>
-        </div>
+        <Footer />
       </div>
     </div>
   );
