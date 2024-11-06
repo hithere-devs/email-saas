@@ -17,11 +17,9 @@ export async function POST(req: NextRequest, res: NextResponse) {
     const { userId } = await auth();
     if (!userId) return new Response("Unauthorized", { status: 401 });
     const { accountId, messages } = await req.json();
-    console.log(accountId);
 
     const orama = new OramaClient(parseInt(accountId));
     const lastMessage = messages[messages.length - 1];
-    console.log("lastMessage", lastMessage);
 
     const context = await orama.vectorSearch({ term: lastMessage.content });
 
