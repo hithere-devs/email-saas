@@ -27,6 +27,10 @@ import { auth } from "@clerk/nextjs/server";
  */
 export const createTRPCContext = async (opts: { headers: Headers }) => {
   const user = await auth();
+  // ctx editing
+  // check here if user is present but not in db then push create him in db
+  // this has to be done until the db is not safe, cause we'll loose users everytime the db is changed. Or I would have to setup a migration setup where i can setup something where we can replicate the db to the new instance!
+
   return {
     db,
     auth: user,

@@ -14,7 +14,13 @@ const config = {
   },
 
   images: {
-    domains: ["cdn.dribbble.com"],
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "cdn.dribbble.com",
+        pathname: "**",
+      },
+    ],
   },
 };
 
