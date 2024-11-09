@@ -1,11 +1,26 @@
 "use server";
 
-import { auth } from "@clerk/nextjs/server";
+// misc imports
 import axios from "axios";
+import { auth } from "@clerk/nextjs/server";
 
+// env vars
 const { AURINKO_CLIENT_ID, NEXT_PUBLIC_URL, AURINKO_CLIENT_SECRET } =
   process.env;
 
+/**
+ * Generates an authentication URL for Aurinko email service integration
+ *
+ * @param serviceType - The email service provider to authenticate with ('Google' or 'Office365')
+ * @returns Promise resolving to the complete Aurinko authorization URL
+ * @throws {Error} When user is not authenticated
+ *
+ * @example
+ * ```typescript
+ * const authUrl = await getAurinkoAuthUrl('Google');
+ * // Returns: https://api.aurinko.io/v1/auth/authorize?...
+ * ```
+ */
 export const getAurinkoAuthUrl = async (
   serviceType: "Google" | "Office365",
 ) => {
@@ -25,6 +40,14 @@ export const getAurinkoAuthUrl = async (
   return `https://api.aurinko.io/v1/auth/authorize?${params.toString()}`;
 };
 
+/**
+ * Exchanges an authorization code for an access token using the Aurinko API.
+ *
+ * @param code - The authorization code to exchange for an access token
+ * @returns Promise that resolves to an object containing the account ID and access token
+ * @throws {AxiosError} When the API request fails
+ *
+ */
 export const exchangeCodeForToken = async (code: string) => {
   try {
     const response = await axios.post(
@@ -49,6 +72,17 @@ export const exchangeCodeForToken = async (code: string) => {
   }
 };
 
+/**
+ * Retrieves account details from the Aurinko API.
+ *
+ * @param token - The bearer token used for authentication
+ * @returns Promise that resolves to an object containing account details:
+ *          - email: The account email address
+ *          - name: The account holder's name
+ *          - id: The unique account identifier
+ * @throws {AxiosError} When the API request fails
+ *
+ */
 export const getAccountDetails = async (token: string) => {
   try {
     const response = await axios.get("https://api.aurinko.io/v1/account", {

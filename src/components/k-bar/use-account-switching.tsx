@@ -1,8 +1,26 @@
-import { api } from "@/trpc/react";
 import { useRegisterActions } from "kbar";
-import React, { useEffect } from "react";
 import { useLocalStorage } from "usehooks-ts";
 
+import { api } from "@/trpc/react";
+
+/**
+ * Custom hook for managing account switching functionality.
+ *
+ * This hook integrates with kbar command palette to enable account switching through UI commands.
+ * It registers the main "Switch Account" action and individual account-switching actions for each
+ * available account.
+ *
+ * Features:
+ * - Fetches available accounts using API query
+ * - Registers main "Switch Account" action with keyboard shortcut "e s"
+ * - Creates individual switch actions for each account
+ * - Manages account selection through localStorage
+ * - Provides search functionality through account names and email addresses
+ *
+ * @remarks
+ * The commented-out useEffect section contains keyboard shortcut functionality (CMD + 1-9)
+ * that can be uncommented to enable quick account switching.
+ */
 const useAccountSwitching = () => {
   const { data: accounts } = api.account.getAccounts.useQuery();
 

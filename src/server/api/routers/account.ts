@@ -1,12 +1,25 @@
 import { z } from "zod";
-import { createTRPCRouter, privateProcedure } from "../trpc";
-import { db } from "@/server/db";
 import { Prisma } from "@prisma/client";
-import { sub } from "date-fns";
-import { emailAddressSchema } from "@/types";
+
+// server imports
+import { db } from "@/server/db";
+import { createTRPCRouter, privateProcedure } from "@/server/api/trpc";
+
+// lib imports
 import { Account } from "@/lib/account";
 import { OramaClient } from "@/lib/orama";
 
+// types
+import { emailAddressSchema } from "@/types";
+
+/**
+ * Authorizes and retrieves account information for a given account ID and user ID.
+ *
+ * @param accountId - The numeric identifier of the account to authorize
+ * @param userId - The string identifier of the user requesting access
+ * @returns Promise resolving to account information including id, email, access token and name
+ * @throws Error if the account is not found or user is not authorized
+ */
 export const authorizeAccountAccess = async (
   accountId: number,
   userId: string,
@@ -31,6 +44,18 @@ export const authorizeAccountAccess = async (
 };
 
 export const accountRouter = createTRPCRouter({
+  /**
+   * Retrieves all email accounts associated with the authenticated user.
+   *
+   * @remarks
+   * This is a private procedure that can only be accessed by authenticated users.
+   * It queries the database for all accounts linked to the current user's ID.
+   *
+   * @returns Promise<Account[]> - A promise that resolves to an array of Account objects
+   * belonging to the authenticated user
+   *
+   * @throws Will throw an error if the user is not authenticated
+   */
   getAccounts: privateProcedure.query(async ({ ctx }) => {
     return await ctx.db.account.findMany({
       where: {
@@ -39,6 +64,23 @@ export const accountRouter = createTRPCRouter({
     });
   }),
 
+  /**
+   * Retrieves the number of threads for a specific account and tab (inbox/draft/sent).
+   *
+   * @remarks
+   * This is a private procedure that can only be accessed by authenticated users.
+   * It validates the user's access to the account before counting threads.
+   *
+   * @param input - The input parameters
+   * @param input.accountId - The ID of the email account to query
+   * @param input.tab - The tab to filter threads by ('inbox', 'draft', or 'sent')
+   *
+   * @returns Promise<number> - A promise that resolves to the count of threads matching the criteria
+   *
+   * @throws Will throw an error if:
+   * - The user is not authenticated
+   * - The user doesn't have access to the specified account
+   */
   getNumThreads: privateProcedure
     .input(z.object({ accountId: z.number(), tab: z.string() }))
     .query(async ({ ctx, input }) => {
@@ -65,6 +107,26 @@ export const accountRouter = createTRPCRouter({
       });
     }),
 
+  /**
+   * Retrieves email threads for a specific account filtered by tab and completion status.
+   *
+   * @remarks
+   * This is a private procedure that can only be accessed by authenticated users.
+   * It validates the user's access to the account and syncs emails before retrieving threads.
+   * Returns up to 15 most recent threads with their associated emails.
+   *
+   * @param input - The input parameters
+   * @param input.accountId - The ID of the email account to query
+   * @param input.tab - The tab to filter threads by ('inbox', 'draft', or 'sent')
+   * @param input.done - Boolean flag to filter threads by completion status
+   *
+   * @returns Promise resolving to an array of Thread objects with associated emails.
+   * Each thread includes email details like sender, body, subject, labels etc.
+   *
+   * @throws Will throw an error if:
+   * - The user is not authenticated
+   * - The user doesn't have access to the specified account
+   */
   getThread: privateProcedure
     .input(
       z.object({
@@ -126,6 +188,23 @@ export const accountRouter = createTRPCRouter({
       });
     }),
 
+  /**
+   * Retrieves email address suggestions (contacts) for a specific account.
+   *
+   * @remarks
+   * This is a private procedure that can only be accessed by authenticated users.
+   * It queries the database for all email addresses associated with the specified account.
+   *
+   * @param input - The input parameters
+   * @param input.accountId - The ID of the email account to query suggestions for
+   *
+   * @returns Promise<Array<{address: string, name: string}>> - A promise that resolves to an array of
+   * email address objects containing the contact's address and name
+   *
+   * @throws Will throw an error if:
+   * - The user is not authenticated
+   * - The user doesn't have access to the specified account
+   */
   getSuggestions: privateProcedure
     .input(z.object({ accountId: z.number() }))
     .query(async ({ ctx, input }) => {
@@ -145,6 +224,31 @@ export const accountRouter = createTRPCRouter({
       });
     }),
 
+  /**
+   * Retrieves reply details for composing a response in an email thread.
+   *
+   * @remarks
+   * This is a private procedure that can only be accessed by authenticated users.
+   * It finds the most recent external email in the thread and formats the reply details.
+   *
+   * @param input - The input parameters
+   * @param input.accountId - The ID of the email account
+   * @param input.threadId - The ID of the thread to get reply details for
+   *
+   * @returns Promise resolving to an object containing:
+   * - to: Array of email addresses to reply to (original sender + recipients excluding current user)
+   * - cc: Array of CC addresses from original email (excluding current user)
+   * - from: Object containing name and email address of current user
+   * - subject: Original email subject
+   * - id: Internet Message ID of the original email
+   *
+   * @throws Will throw an error if:
+   * - The user is not authenticated
+   * - The user doesn't have access to the specified account
+   * - The thread is not found
+   * - The thread contains no emails
+   * - No external email is found in the thread
+   */
   getReplyDetails: privateProcedure
     .input(z.object({ accountId: z.number(), threadId: z.string() }))
     .query(async ({ ctx, input }) => {
@@ -205,6 +309,33 @@ export const accountRouter = createTRPCRouter({
       };
     }),
 
+  /**
+   * Sends an email through the specified account with the provided details.
+   *
+   * @remarks
+   * This is a private procedure that can only be accessed by authenticated users.
+   * It validates the user's access to the account before sending the email.
+   * Supports both new emails and replies to existing threads.
+   *
+   * @param input - The input parameters for sending an email
+   * @param input.accountId - The ID of the email account to send from
+   * @param input.body - The HTML body content of the email
+   * @param input.subject - The subject line of the email
+   * @param input.from - Object containing name and address of the sender
+   * @param input.cc - Optional array of CC recipients
+   * @param input.bcc - Optional array of BCC recipients
+   * @param input.to - Array of primary recipients
+   * @param input.replyTo - Email address to set as the reply-to address
+   * @param input.inReplyTo - Optional Message-ID of the email being replied to
+   * @param input.threadId - Optional ID of the thread this email belongs to
+   *
+   * @returns Promise<void> - Resolves when the email is successfully sent
+   *
+   * @throws Will throw an error if:
+   * - The user is not authenticated
+   * - The user doesn't have access to the specified account
+   * - Email sending fails for any reason
+   */
   sendEmail: privateProcedure
     .input(
       z.object({
@@ -241,6 +372,24 @@ export const accountRouter = createTRPCRouter({
       });
     }),
 
+  /**
+   * Searches emails within a specific account using the provided search query.
+   *
+   * @remarks
+   * This is a private procedure that can only be accessed by authenticated users.
+   * It uses OramaClient for performing the search operation on emails.
+   *
+   * @param input - The input parameters
+   * @param input.accountId - The ID of the email account to search within
+   * @param input.query - The search query string to match against emails
+   *
+   * @returns Promise resolving to search results from OramaClient
+   *
+   * @throws Will throw an error if:
+   * - The user is not authenticated
+   * - The user doesn't have access to the specified account
+   * - The account is not found
+   */
   searchEmails: privateProcedure
     .input(
       z.object({

@@ -6,6 +6,15 @@ const config = new Configuration({
 
 const openai = new OpenAIApi(config);
 
+/**
+ * Generates embeddings for the provided text using OpenAI's text-embedding-ada-002 model.
+ *
+ * @param text - The input text to generate embeddings for. Newlines will be replaced with spaces.
+ * @returns Promise<number[]> - A promise that resolves to an array of embedding numbers representing the text.
+ *
+ * @throws {Error} - Throws any errors that occur during the embedding creation process or API call.
+ *
+ */
 export async function getEmbeddings(text: string) {
   try {
     const response = await openai.createEmbedding({
@@ -20,5 +29,3 @@ export async function getEmbeddings(text: string) {
     throw error;
   }
 }
-
-// console.log((await getEmbeddings("Hello, world!")).length);
