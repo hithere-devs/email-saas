@@ -74,7 +74,6 @@ const ComposeButton = ({ isCollapsed }: { isCollapsed: boolean }) => {
       <DrawerContent>
         <DrawerHeader>
           <DrawerTitle>Compose Email</DrawerTitle>
-          {/* <DrawerDescription></DrawerDescription> */}
           <EmailEditor
             toValues={toValues}
             setToValues={setToValues}

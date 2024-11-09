@@ -1,11 +1,26 @@
-import { EmailMessage, EmailAddress, EmailAttachment } from "@/types";
-import { log } from "./logger";
-import pLimit from "p-limit";
 import { db } from "@/server/db";
 import { Prisma } from "@prisma/client";
-import { OramaClient } from "./orama";
-import { turndown } from "./turndown";
 
+// lib imports
+import { OramaClient } from "@/lib/orama";
+import { turndown } from "@/lib/turndown";
+
+// types
+import { EmailMessage, EmailAddress, EmailAttachment } from "@/types";
+
+/**
+ * Synchronizes email messages to the database and Orama search index.
+ *
+ * @param emails - Array of EmailMessage objects to be synchronized
+ * @param accountId - Numeric identifier for the account
+ *
+ * @remarks
+ * This function performs two operations for each email:
+ * 1. Saves the email to the database using saveEmails()
+ * 2. Indexes the email in Orama search with processed content
+ *
+ * @throws Will log error to console if synchronization fails
+ */
 export const syncEmailsToDataBase = async (
   emails: EmailMessage[],
   accountId: number,
@@ -30,6 +45,26 @@ export const syncEmailsToDataBase = async (
   }
 };
 
+/**
+ * Saves or updates email messages and related data in the database.
+ *
+ * @param email - The email message to be saved containing all message details including
+ *                headers, body, attachments, and recipient information
+ * @param accountId - The ID of the account associated with this email
+ * @param index - The index position of the email (currently unused)
+ *
+ * This function performs several operations:
+ * 1. Determines email label type (inbox/sent/draft)
+ * 2. Upserts all email addresses (from, to, cc, bcc, replyTo)
+ * 3. Upserts the email thread with participant information
+ * 4. Upserts the email itself with all its properties
+ * 5. Updates thread status based on contained emails
+ * 6. Upserts any attachments
+ *
+ * @throws {Prisma.PrismaClientKnownRequestError} When database operations fail
+ *
+ * @returns {Promise<void>} Returns nothing on completion
+ */
 async function saveEmails(
   email: EmailMessage,
   accountId: number,
@@ -236,6 +271,17 @@ async function saveEmails(
   }
 }
 
+/**
+ * Upserts an email address record in the database for a given account.
+ * First attempts to find an existing record, if found returns it, otherwise creates a new one.
+ *
+ * @param address - The email address object containing address details to upsert
+ * @param accountId - The account ID associated with the email address
+ *
+ * @returns Promise that resolves to the found/created EmailAddress record, or null if operation fails
+ *
+ * @throws Logs error to console if database operation fails
+ */
 async function upsertEmailAddress(address: EmailAddress, accountId: number) {
   try {
     const existingAddress = await db.emailAddress.findUnique({
@@ -269,6 +315,19 @@ async function upsertEmailAddress(address: EmailAddress, accountId: number) {
   }
 }
 
+/**
+ * Upserts an email attachment record in the database.
+ *
+ * @param emailId - The ID of the email associated with the attachment
+ * @param attachment - The email attachment object containing details like name, type, size etc.
+ * @throws Will log error if database operation fails
+ *
+ * @remarks
+ * This function will either:
+ * - Update an existing attachment if ID exists
+ * - Create a new attachment record if ID doesn't exist
+ * The operation is wrapped in error handling that logs failures without throwing.
+ */
 async function upsertAttachment(emailId: string, attachment: EmailAttachment) {
   try {
     await db.emailAttachment.upsert({

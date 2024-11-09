@@ -1,5 +1,18 @@
 "use client";
 
+import React from "react";
+
+// utils
+import { cn } from "@/lib/utils";
+
+// api
+import { api } from "@/trpc/react";
+
+// hooks
+import { useRouter } from "next/navigation";
+import { useLocalStorage } from "usehooks-ts";
+
+// components
 import {
   Select,
   SelectContent,
@@ -7,13 +20,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { getAurinkoAuthUrl } from "@/lib/aurinko";
-import { cn } from "@/lib/utils";
-import { api } from "@/trpc/react";
+
+// icons
 import { PlusIcon } from "@radix-ui/react-icons";
-import { useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
-import { useLocalStorage } from "usehooks-ts";
 
 type Props = {
   isCollapsed: boolean;

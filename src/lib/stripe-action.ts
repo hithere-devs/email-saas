@@ -1,8 +1,10 @@
 "use server";
 
 import { auth } from "@clerk/nextjs/server";
-import { stripe } from "./stripe";
 import { redirect } from "next/navigation";
+
+// lib imports
+import { stripe } from "@/lib/stripe";
 
 export async function createCheckoutSession() {
   const { userId } = auth();

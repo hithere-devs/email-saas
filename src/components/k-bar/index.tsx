@@ -7,7 +7,6 @@ import {
   KBarPositioner,
   KBarProvider,
   KBarSearch,
-  Priority,
 } from "kbar";
 import RenderResults from "./render-results";
 import { useLocalStorage } from "usehooks-ts";
