@@ -1,26 +1,35 @@
 "use client";
 
 import React, { useState } from "react";
+import dynamic from "next/dynamic";
+
+// clerk
+import { UserButton } from "@clerk/nextjs";
+
+// components
+import ThreadDisplay from "@/app/mail/thread-display";
+import AccountSwitcher from "@/app/mail/account-switcher";
+import Sidebar from "@/app/mail/sidebar";
+import ThreadList from "@/app/mail/thread-list";
+import SearchBar from "@/app/mail/search-bar";
+import AskAI from "@/app/mail/ask-ai";
+import { Separator } from "@/components/ui/separator";
+import { TooltipProvider } from "@/components/ui/tooltip";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   ResizableHandle,
   ResizablePanel,
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
-import { TooltipProvider } from "@radix-ui/react-tooltip";
-import { Separator } from "@/components/ui/separator";
-import { cn } from "@/lib/utils";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import AccountSwitcher from "./account-switcher";
-import Sidebar from "./sidebar";
-import ThreadList from "./thread-list";
-import ThreadDisplay from "./thread-display";
-import { UserButton } from "@clerk/nextjs";
 import { ModeToggle } from "@/components/dark-mode-toggle";
-import dynamic from "next/dynamic";
-import SearchBar from "./search-bar";
-import AskAI from "./ask-ai";
+
+// utils
+import { cn } from "@/lib/utils";
+
+// dynamic imports
 const ComposeButton = dynamic(() => import("./compose-button"), { ssr: false });
 
+// types
 type Props = {
   defaultLayout: number[] | undefined;
   navCollapsedSize: number;
