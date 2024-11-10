@@ -3,20 +3,11 @@
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import useThreads from "@/hooks/use-threads";
-import {
-  Archive,
-  ArchiveX,
-  Clock,
-  MoreVertical,
-  MoreVerticalIcon,
-  Trash2,
-} from "lucide-react";
+import { Archive, ArchiveX, Clock, MoreVertical, Trash2 } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
@@ -34,6 +25,9 @@ type Props = {};
 const ThreadDisplay = (props: Props) => {
   const { threadId, threads } = useThreads();
   const thread = threads?.find((t) => t.id === threadId);
+
+  // TODO - take out all the messageIds from the current thread here and call the mark as read fn on them
+  // TODO - for a Single message handle the mark as read as well!
 
   const [isSearching] = useAtom(isSearchingAtom);
 

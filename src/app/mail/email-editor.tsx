@@ -1,18 +1,25 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import { readStreamableValue } from "ai/rsc";
+
+// tiptap text-editor
 import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { Text } from "@tiptap/extension-text";
-import EditorMenuBar from "./editor-menubar";
+
+// components
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import TagInput from "./tag-input";
-import AIComposeButton from "./ai-conpose-button";
-import { generate } from "./action";
-import { readStreamableValue } from "ai/rsc";
+import TagInput from "@/app/mail/tag-input";
+import AIComposeButton from "@/app/mail/ai-conpose-button";
+import EditorMenuBar from "@/app/mail/editor-menubar";
 
+// actions
+import { generate } from "@/app/mail/action";
+
+// types
 type Props = {
   subject: string;
   setSubject: (value: string) => void;

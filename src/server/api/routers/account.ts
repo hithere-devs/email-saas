@@ -410,4 +410,37 @@ export const accountRouter = createTRPCRouter({
       const results = await orama.search({ term: input.query });
       return results;
     }),
+
+  // NOTE - Same APIs can be used for a single single message as by passing the single message id in the messageIds array
+  markAsRead: privateProcedure
+    .input(
+      z.object({
+        accountId: z.number(),
+        messageIds: z.array(z.string()),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const account = await authorizeAccountAccess(
+        input.accountId,
+        ctx.auth.userId,
+      );
+      const acc = new Account(account.accessToken);
+      await acc.markAsRead(input.messageIds, false);
+    }),
+
+  markAsUnRead: privateProcedure
+    .input(
+      z.object({
+        accountId: z.number(),
+        messageIds: z.array(z.string()),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const account = await authorizeAccountAccess(
+        input.accountId,
+        ctx.auth.userId,
+      );
+      const acc = new Account(account.accessToken);
+      await acc.markAsRead(input.messageIds, true);
+    }),
 });

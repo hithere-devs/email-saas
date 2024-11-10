@@ -21,6 +21,7 @@ import { syncEmailsToDataBase } from "./sync-to-db";
 export class Account {
   // token recieved from the aurinko api
   private token: string;
+  private AURINKO_URL = "https://api.aurinko.io/v1";
 
   /**
    * Initiates an email synchronization process with the Aurinko API.
@@ -36,7 +37,7 @@ export class Account {
    */
   private async startSync() {
     const response = await axios.post<SyncResponse>(
-      `https://api.aurinko.io/v1/email/sync`,
+      `${this.AURINKO_URL}/email/sync`,
       {},
       {
         headers: {
@@ -79,7 +80,7 @@ export class Account {
     }
 
     const response = await axios.get<SyncUpdatedResponse>(
-      `https://api.aurinko.io/v1/email/sync/updated`,
+      `${this.AURINKO_URL}/email/sync/updated`,
       {
         headers: {
           Authorization: `Bearer ${this.token}`,
@@ -270,7 +271,7 @@ export class Account {
   }) {
     try {
       const response = await axios.post(
-        "https://api.aurinko.io/v1/email/messages",
+        `${this.AURINKO_URL}/email/messages`,
         {
           from,
           subject,
@@ -298,6 +299,46 @@ export class Account {
         console.error(error.response?.data);
       }
       console.error(error);
+    }
+  }
+
+  async markAsRead(messageIds: string[], unread: boolean) {
+    for (const id of messageIds) {
+      // mark the email as read in the aurinko api
+      await axios.post(
+        `${this.AURINKO_URL}/email/messages/${id}/status`,
+        {
+          unread,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${this.token}`,
+          },
+        },
+      );
+
+      // and then mark as read in the database as well!
+      const email = await db.email.findUnique({
+        where: {
+          id,
+        },
+      });
+
+      if (email) {
+        const updatedLabels = email.sysLabels.filter(
+          (label) => label !== "unread",
+        );
+        updatedLabels.push("read");
+
+        await db.email.update({
+          where: {
+            id,
+          },
+          data: {
+            sysLabels: updatedLabels,
+          },
+        });
+      }
     }
   }
 }
