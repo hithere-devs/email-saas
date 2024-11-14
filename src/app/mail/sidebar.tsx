@@ -2,7 +2,7 @@
 import React from "react";
 import { useLocalStorage } from "usehooks-ts";
 import { Nav } from "./nav";
-import { File, InboxIcon, Send } from "lucide-react";
+import { File, InboxIcon, Send, Settings } from "lucide-react";
 import { api } from "@/trpc/react";
 
 type Props = {
@@ -11,7 +11,7 @@ type Props = {
 
 const Sidebar = ({ isCollapsed }: Props) => {
   const [accountId] = useLocalStorage("accountId", "");
-  const [tab] = useLocalStorage<"inbox" | "draft" | "sent">(
+  const [tab] = useLocalStorage<"inbox" | "draft" | "sent" | "settings">(
     "sidebar-tab",
     "inbox",
   );
@@ -50,6 +50,11 @@ const Sidebar = ({ isCollapsed }: Props) => {
           icon: Send,
           label: sentThreads?.toString() ?? "0",
           variant: tab === "sent" ? "default" : "ghost",
+        },
+        {
+          title: "Settings",
+          icon: Settings,
+          variant: tab === "settings" ? "default" : "ghost",
         },
       ]}
       isCollapsed={isCollapsed}

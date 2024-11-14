@@ -25,6 +25,10 @@ import { ModeToggle } from "@/components/dark-mode-toggle";
 
 // utils
 import { cn } from "@/lib/utils";
+// api
+import { api } from "@/trpc/react";
+import { useLocalStorage } from "usehooks-ts";
+import SettingsTab from "./settings-tab";
 
 // dynamic imports
 const ComposeButton = dynamic(() => import("./compose-button"), { ssr: false });
@@ -42,6 +46,12 @@ const Mail = ({
   defaultCollapsed,
 }: Props) => {
   const [isCollapsed, setIsCollapsed] = useState(defaultCollapsed);
+
+  const [tab] = useLocalStorage<"inbox" | "draft" | "sent" | "settings">(
+    "sidebar-tab",
+    "inbox",
+  );
+  const { data } = api.account.getAccounts.useQuery();
 
   return (
     <TooltipProvider delayDuration={0}>
@@ -113,14 +123,22 @@ const Mail = ({
               </TabsList>
             </div>
             <Separator />
-            {/* Search Bar */}
-            <SearchBar />
-            <TabsContent value="inbox">
-              <ThreadList />
-            </TabsContent>
-            <TabsContent value="done">
-              <ThreadList />
-            </TabsContent>
+            {tab === 'settings' ? (
+              <React.Fragment key="setting tab">
+                <SettingsTab />
+              </React.Fragment>
+            ) : (
+              <React.Fragment key="non-setting tab">
+                {/* Search Bar */}
+                <SearchBar />
+                <TabsContent value="inbox">
+                  <ThreadList />
+                </TabsContent>
+                <TabsContent value="done">
+                  <ThreadList />
+                </TabsContent>
+              </React.Fragment>
+            )}
           </Tabs>
         </ResizablePanel>
         <ResizableHandle withHandle />

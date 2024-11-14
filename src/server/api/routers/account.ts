@@ -64,6 +64,19 @@ export const accountRouter = createTRPCRouter({
     });
   }),
 
+  deleteAccount: privateProcedure
+  .input(z.object({ accountId: z.bigint() }))
+  .mutation(async ({ ctx, input }) => {
+    return await ctx.db.account.update({
+      where: {
+        id: input.accountId
+      },
+      data: {
+        deletedAt: new Date()
+      }
+    })
+  }),
+
   /**
    * Retrieves the number of threads for a specific account and tab (inbox/draft/sent).
    *
