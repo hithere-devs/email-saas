@@ -110,17 +110,19 @@ const Mail = ({
         <ResizableHandle withHandle />
         <ResizablePanel defaultSize={defaultLayout[1]} minSize={30}>
           <Tabs defaultValue="inbox">
-            <div className="flex items-center px-4 py-2">
-              <h1 className="font-bold">Inbox</h1>
-              <TabsList className="ml-auto">
-                <TabsTrigger
-                  value="inbox"
-                  className="text-zinc-600 dark:text-zinc-200"
-                >
-                  Inbox
-                </TabsTrigger>
-                <TabsTrigger value="done">Done</TabsTrigger>
-              </TabsList>
+            <div className="flex h-[52px] items-center px-4 py-2">
+              <h1 className="font-bold capitalize ">{tab}</h1>
+              {tab === 'inbox' && (
+                <TabsList className="ml-auto">
+                  <TabsTrigger
+                    value="inbox"
+                    className="text-zinc-600 dark:text-zinc-200"
+                  >
+                    Inbox
+                  </TabsTrigger>
+                  <TabsTrigger value="done">Done</TabsTrigger>
+                </TabsList>
+              )}
             </div>
             <Separator />
             {tab === 'settings' ? (

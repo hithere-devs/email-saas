@@ -22,6 +22,7 @@ const SettingsTab = () => {
   const deleteAccount = api.account.deleteAccount.useMutation()
 
   const handleDelete = () => {
+    if (accounts.length <= 1) return;
     if (!accountToDelete) return;
 
     try {
@@ -44,7 +45,7 @@ const SettingsTab = () => {
   return (
     <div className="mt-4 overflow-x-auto">
     <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-      <thead className="bg-gray-50 dark:bg-gray-800">
+      <thead>
         <tr>
           <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
             Accounts
@@ -55,8 +56,8 @@ const SettingsTab = () => {
           {/* Add more columns as needed */}
         </tr>
       </thead>
-      <tbody className="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
-      {data?.map((account) => (
+      <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
+      {accounts?.map((account) => (
         <tr key={account.id}>
           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
             {account.emailAddress}
@@ -67,7 +68,10 @@ const SettingsTab = () => {
               className="text-gray-400 hover:text-red-500 transition-colors duration-200"
               aria-label="Delete Account"
             >
-              <Trash className="w-5 h-5 cursor-pointer" />
+              {accounts.length > 1 && (
+                <Trash className="w-5 h-5 cursor-pointer" />
+              )}
+             
             </button>
           </td>
         </tr>

@@ -64,19 +64,6 @@ export const accountRouter = createTRPCRouter({
     });
   }),
 
-  deleteAccount: privateProcedure
-  .input(z.object({ accountId: z.bigint() }))
-  .mutation(async ({ ctx, input }) => {
-    return await ctx.db.account.update({
-      where: {
-        id: input.accountId
-      },
-      data: {
-        deletedAt: new Date()
-      }
-    })
-  }),
-
   /**
    * Retrieves the number of threads for a specific account and tab (inbox/draft/sent).
    *
@@ -423,6 +410,17 @@ export const accountRouter = createTRPCRouter({
       const results = await orama.search({ term: input.query });
       return results;
     }),
+
+
+  deleteAccount: privateProcedure
+  .input(z.object({ accountId: z.bigint() }))
+  .mutation(async ({ ctx, input }) => {
+    return await ctx.db.account.delete({
+      where: {
+        id: input.accountId
+      }
+    })
+  }),
 
   // NOTE - Same APIs can be used for a single single message as by passing the single message id in the messageIds array
   markAsRead: privateProcedure
