@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { useLocalStorage } from "usehooks-ts";
 import dynamic from "next/dynamic";
 
 // clerk
@@ -13,6 +14,7 @@ import Sidebar from "@/app/mail/sidebar";
 import ThreadList from "@/app/mail/thread-list";
 import SearchBar from "@/app/mail/search-bar";
 import AskAI from "@/app/mail/ask-ai";
+import SettingsTab from "@/app/mail/settings-tab";
 import { Separator } from "@/components/ui/separator";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -27,8 +29,6 @@ import { ModeToggle } from "@/components/dark-mode-toggle";
 import { cn } from "@/lib/utils";
 // api
 import { api } from "@/trpc/react";
-import { useLocalStorage } from "usehooks-ts";
-import SettingsTab from "./settings-tab";
 
 // dynamic imports
 const ComposeButton = dynamic(() => import("./compose-button"), { ssr: false });

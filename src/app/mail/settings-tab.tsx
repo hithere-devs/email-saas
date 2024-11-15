@@ -1,16 +1,15 @@
 "use client";
+import { useState } from "react";
+import { Account } from "@prisma/client";
 
-// utils
-import { cn } from "@/lib/utils";
+import { Dialog, DialogContent, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 
 // api
 import { api } from "@/trpc/react";
+// icons
 import { Trash } from "lucide-react";
 
-import { Dialog, DialogContent, DialogTitle, DialogDescription, DialogFooter, DialogTrigger } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { useState } from "react";
-import { Account } from "@prisma/client";
 
 const SettingsTab = () => {
   const { data } = api.account.getAccounts.useQuery();
@@ -26,15 +25,14 @@ const SettingsTab = () => {
     if (!accountToDelete) return;
 
     try {
-      // Call API to delete the account
       deleteAccount.mutate({ accountId: accountToDelete.id });
       setAccounts(accounts.filter((account) => account.id !== accountToDelete.id));
       console.log("deleted")
     } catch (error) {
       console.error("Failed to delete account:", error);
     } finally {
-      setIsModalOpen(false); // Close the modal after deletion
-      setAccountToDelete(null); // Reset selected account
+      setIsModalOpen(false);
+      setAccountToDelete(null);
     }
   };
 
@@ -53,7 +51,6 @@ const SettingsTab = () => {
           <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
             
           </th>
-          {/* Add more columns as needed */}
         </tr>
       </thead>
       <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
