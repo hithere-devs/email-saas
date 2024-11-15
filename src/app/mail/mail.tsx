@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { useLocalStorage } from "usehooks-ts";
 import dynamic from "next/dynamic";
 
 // clerk
@@ -13,6 +14,7 @@ import Sidebar from "@/app/mail/sidebar";
 import ThreadList from "@/app/mail/thread-list";
 import SearchBar from "@/app/mail/search-bar";
 import AskAI from "@/app/mail/ask-ai";
+import SettingsTab from "@/app/mail/settings-tab";
 import { Separator } from "@/components/ui/separator";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -25,6 +27,8 @@ import { ModeToggle } from "@/components/dark-mode-toggle";
 
 // utils
 import { cn } from "@/lib/utils";
+// api
+import { api } from "@/trpc/react";
 
 // dynamic imports
 const ComposeButton = dynamic(() => import("./compose-button"), { ssr: false });
@@ -42,6 +46,12 @@ const Mail = ({
   defaultCollapsed,
 }: Props) => {
   const [isCollapsed, setIsCollapsed] = useState(defaultCollapsed);
+
+  const [tab] = useLocalStorage<"inbox" | "draft" | "sent" | "settings">(
+    "sidebar-tab",
+    "inbox",
+  );
+  const { data } = api.account.getAccounts.useQuery();
 
   return (
     <TooltipProvider delayDuration={0}>
@@ -100,27 +110,37 @@ const Mail = ({
         <ResizableHandle withHandle />
         <ResizablePanel defaultSize={defaultLayout[1]} minSize={30}>
           <Tabs defaultValue="inbox">
-            <div className="flex items-center px-4 py-2">
-              <h1 className="font-bold">Inbox</h1>
-              <TabsList className="ml-auto">
-                <TabsTrigger
-                  value="inbox"
-                  className="text-zinc-600 dark:text-zinc-200"
-                >
-                  Inbox
-                </TabsTrigger>
-                <TabsTrigger value="done">Done</TabsTrigger>
-              </TabsList>
+            <div className="flex h-[52px] items-center px-4 py-2">
+              <h1 className="font-bold capitalize ">{tab}</h1>
+              {tab === 'inbox' && (
+                <TabsList className="ml-auto">
+                  <TabsTrigger
+                    value="inbox"
+                    className="text-zinc-600 dark:text-zinc-200"
+                  >
+                    Inbox
+                  </TabsTrigger>
+                  <TabsTrigger value="done">Done</TabsTrigger>
+                </TabsList>
+              )}
             </div>
             <Separator />
-            {/* Search Bar */}
-            <SearchBar />
-            <TabsContent value="inbox">
-              <ThreadList />
-            </TabsContent>
-            <TabsContent value="done">
-              <ThreadList />
-            </TabsContent>
+            {tab === 'settings' ? (
+              <React.Fragment key="setting tab">
+                <SettingsTab />
+              </React.Fragment>
+            ) : (
+              <React.Fragment key="non-setting tab">
+                {/* Search Bar */}
+                <SearchBar />
+                <TabsContent value="inbox">
+                  <ThreadList />
+                </TabsContent>
+                <TabsContent value="done">
+                  <ThreadList />
+                </TabsContent>
+              </React.Fragment>
+            )}
           </Tabs>
         </ResizablePanel>
         <ResizableHandle withHandle />

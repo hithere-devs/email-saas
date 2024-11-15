@@ -30,7 +30,7 @@ const useThreads = () => {
 
   const [accountId] = useLocalStorage("accountId", "");
 
-  const [tab] = useLocalStorage<"inbox" | "draft" | "sent">(
+  const [tab] = useLocalStorage<"inbox" | "draft" | "sent" | "settings">(
     "sidebar-tab",
     "inbox",
   );

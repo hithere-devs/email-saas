@@ -30,6 +30,7 @@ model Account {
     oramaIndex Json?
     threads Thread[]
     emailAdresses EmailAddress[]
+    deleted DateTime? // Nullable field for soft deletes
 }
 
 model Thread {

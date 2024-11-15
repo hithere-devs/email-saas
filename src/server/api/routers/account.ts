@@ -411,6 +411,36 @@ export const accountRouter = createTRPCRouter({
       return results;
     }),
 
+
+    /**
+ * Deletes an account from the database based on the provided account ID.
+ *
+ * This is a private procedure that expects an input object containing a single property:
+ * - `accountId`: A bigint representing the ID of the account to delete.
+ *
+ * The procedure uses the context's database instance to delete the account.
+ *
+ * @async
+ * @function deleteAccount
+ * @param {Object} input - The input object for the procedure.
+ * @param {bigint} input.accountId - The unique ID of the account to delete.
+ * @param {Object} ctx - The context containing the database instance.
+ * @param {Object} ctx.db - The database instance used to perform the operation.
+ * @returns {Promise<Object>} A promise that resolves with the result of the delete operation.
+ * 
+ * @throws {Error} If the account ID does not exist or the deletion fails.
+ */
+
+  deleteAccount: privateProcedure
+  .input(z.object({ accountId: z.bigint() }))
+  .mutation(async ({ ctx, input }) => {
+    return await ctx.db.account.delete({
+      where: {
+        id: input.accountId
+      }
+    })
+  }),
+
   // NOTE - Same APIs can be used for a single single message as by passing the single message id in the messageIds array
   markAsRead: privateProcedure
     .input(
