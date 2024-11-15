@@ -9,6 +9,8 @@ const createPrismaClient = () => {
 
   prisma.$use(async (params, next) => {
     // Check incoming query type
+    if(params.model === 'Account') {
+        
       if (params.action == 'delete') {
         // Delete queries
         // Change action to an update
@@ -33,6 +35,7 @@ const createPrismaClient = () => {
         }
         console.log( 'Param.args ========',  params.args)
       }
+    }
     return next(params)
   })
 
