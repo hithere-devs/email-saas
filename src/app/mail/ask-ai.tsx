@@ -1,8 +1,8 @@
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { Send, SparklesIcon } from "lucide-react";
-import { useChat } from "ai/react";
+import { Message, useChat } from "ai/react";
 import useThreads from "@/hooks/use-threads";
 import PremiumBanner from "./premium-banner";
 
@@ -10,8 +10,10 @@ const AskAI = ({ isCollapsed }: { isCollapsed: boolean }) => {
   if (isCollapsed) return null;
 
   const { accountId } = useThreads();
-
-  const { input, handleInputChange, handleSubmit, messages } = useChat({
+  const chatRef = useRef<HTMLDivElement | null>(null);
+  const [isResponseLoading, setIsResponseLoading] = useState(false);
+  
+  const { input, handleInputChange, handleSubmit, messages, isLoading } = useChat({
     api: "/api/chat",
     body: {
       accountId,
@@ -22,17 +24,32 @@ const AskAI = ({ isCollapsed }: { isCollapsed: boolean }) => {
     initialMessages: [],
   });
 
+  const adjustScrollInChat = () => {
+    if (chatRef.current) {
+      // Scroll to the bottom of the container
+      chatRef.current.scrollTop = chatRef.current.scrollHeight;
+    }
+  };
+
+  useEffect(() => {
+    adjustScrollInChat()
+    if(messages[messages.length -1]?.role === 'assistant'){
+      setIsResponseLoading(false)
+    }
+  }, [messages])
+
   return (
     <div className="max-w-[390px] p-2">
-      <PremiumBanner />
+      {/* <PremiumBanner /> */}
       <div className="h-2"></div>
-      <motion.div className="flex flex-1 flex-col items-end rounded-lg bg-gray-100 p-4 pb-4 shadow-inner dark:bg-gray-900">
+      <motion.div className="flex flex-1 flex-col items-end rounded-lg bg-gray-100 p-4 pb-4 shadow-inner dark:bg-gray-900 max-h-[400px]">
         <div
           className="flex max-h-[50vh] w-full flex-col gap-2 overflow-y-scroll"
           id="message-container"
+          ref={chatRef}
         >
-          <AnimatePresence mode="wait">
-            {messages.map((message: any) => (
+          <AnimatePresence mode="sync" >
+            {messages.map((message: Message) => (
               <motion.div
                 key={message.id}
                 layout="position"
@@ -41,7 +58,7 @@ const AskAI = ({ isCollapsed }: { isCollapsed: boolean }) => {
                   {
                     "self-end text-gray-900 dark:text-gray-100":
                       message.role === "user",
-                    "self-start bg-blue-500 text-white":
+                    "self-start !bg-blue-500 text-white":
                       message.role === "assistant",
                   },
                 )}
@@ -56,6 +73,28 @@ const AskAI = ({ isCollapsed }: { isCollapsed: boolean }) => {
                 </div>
               </motion.div>
             ))}
+
+            {isResponseLoading && (
+              <motion.div
+              layout="position"
+              className={cn(
+                "z-10 mt-2 max-w-[250px] break-words rounded-2xl dark:bg-gray-800 self-start !bg-blue-500 text-white"
+              )}
+              layoutId={`container-[${messages.length - 1} ]`}
+              transition={{
+                type: "easeOut",
+                duration: 0.2,
+              }}
+            >
+              <div className="px-3 py-2 text-[13px] leading-[15px] flex items-center justify-center space-x-2">
+
+      <div className="w-2 h-2 rounded-full bg-primary animate-bounce" style={{ animationDelay: '0s' }}></div>
+      <div className="w-2 h-2 rounded-full bg-primary animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+      <div className="w-2 h-2 rounded-full bg-primary animate-bounce" style={{ animationDelay: '0.4s' }}></div>
+
+              </div>
+              </motion.div>
+            )}
           </AnimatePresence>
         </div>
 
@@ -114,13 +153,19 @@ const AskAI = ({ isCollapsed }: { isCollapsed: boolean }) => {
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="flex w-full">
+          <form onSubmit={(e) => {
+            e.preventDefault()
+            handleSubmit()
+            setIsResponseLoading(true)
+          }}
+          className="flex w-full">
             <input
               type="text"
               placeholder="Ask AI..."
               className="relative h-9 flex-grow rounded-full border border-gray-200 bg-white px-3 py-1 text-[13px] outline-none placeholder:text-[13px] dark:bg-black"
               value={input}
               onChange={handleInputChange}
+              onClick={adjustScrollInChat}
             />
 
             <motion.div
