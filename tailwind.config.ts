@@ -62,6 +62,15 @@ export default {
           "5": "hsl(var(--chart-5))",
         },
       },
+      animation: {
+        'dot-pulse': 'dot-pulse 1.5s infinite',
+      },
+      keyframes: {
+        'dot-pulse': {
+          '0%, 80%, 100%': { opacity: '0' },
+          '40%': { opacity: '1' },
+        },
+      },
     },
   },
   plugins: [
