@@ -4,7 +4,6 @@ import { cn } from "@/lib/utils";
 import { Send, SparklesIcon } from "lucide-react";
 import { Message, useChat } from "ai/react";
 import useThreads from "@/hooks/use-threads";
-import PremiumBanner from "./premium-banner";
 
 const AskAI = ({ isCollapsed }: { isCollapsed: boolean }) => {
   if (isCollapsed) return null;
@@ -12,17 +11,18 @@ const AskAI = ({ isCollapsed }: { isCollapsed: boolean }) => {
   const { accountId } = useThreads();
   const chatRef = useRef<HTMLDivElement | null>(null);
   const [isResponseLoading, setIsResponseLoading] = useState(false);
-  
-  const { input, handleInputChange, handleSubmit, messages, isLoading } = useChat({
-    api: "/api/chat",
-    body: {
-      accountId,
-    },
-    onError: (error) => {
-      console.error("Error in Chat", error);
-    },
-    initialMessages: [],
-  });
+
+  const { input, handleInputChange, handleSubmit, messages, isLoading } =
+    useChat({
+      api: "/api/chat",
+      body: {
+        accountId,
+      },
+      onError: (error) => {
+        console.error("Error in Chat", error);
+      },
+      initialMessages: [],
+    });
 
   const adjustScrollInChat = () => {
     if (chatRef.current) {
@@ -31,23 +31,26 @@ const AskAI = ({ isCollapsed }: { isCollapsed: boolean }) => {
   };
 
   useEffect(() => {
-    adjustScrollInChat()
-    if(messages[messages.length -1]?.role === 'assistant' && isResponseLoading){
-      setIsResponseLoading(false)
+    adjustScrollInChat();
+    if (
+      messages[messages.length - 1]?.role === "assistant" &&
+      isResponseLoading
+    ) {
+      setIsResponseLoading(false);
     }
-  }, [messages])
+  }, [messages]);
 
   return (
     <div className="max-w-[390px] p-2">
       {/* <PremiumBanner /> */}
       <div className="h-2"></div>
-      <motion.div className="flex flex-1 flex-col items-end rounded-lg bg-gray-100 p-4 pb-4 shadow-inner dark:bg-gray-900 max-h-[400px]">
+      <motion.div className="flex max-h-[400px] flex-1 flex-col items-end rounded-lg bg-gray-100 p-4 pb-4 shadow-inner dark:bg-gray-900">
         <div
           className="flex max-h-[50vh] w-full flex-col gap-2 overflow-y-scroll pb-3"
           id="message-container"
           ref={chatRef}
         >
-          <AnimatePresence mode="sync" >
+          <AnimatePresence mode="sync">
             {messages.map((message: Message) => (
               <motion.div
                 key={message.id}
@@ -74,10 +77,10 @@ const AskAI = ({ isCollapsed }: { isCollapsed: boolean }) => {
             ))}
           </AnimatePresence>
           {isResponseLoading && (
-              <motion.div
+            <motion.div
               layout="position"
               className={cn(
-                "z-10 mt-2 max-w-[250px] break-words rounded-2xl dark:bg-gray-800 self-start !bg-blue-500 text-white"
+                "z-10 mt-2 max-w-[250px] self-start break-words rounded-2xl !bg-blue-500 text-white dark:bg-gray-800",
               )}
               layoutId={`container-[${messages.length - 1} ]`}
               transition={{
@@ -85,13 +88,22 @@ const AskAI = ({ isCollapsed }: { isCollapsed: boolean }) => {
                 duration: 0.2,
               }}
             >
-              <div className="px-3 py-2 text-[13px] leading-[15px] flex items-center justify-center space-x-2">
-                <div className="w-1 h-1 rounded-full bg-primary animate-dot-pulse" style={{ animationDelay: '0s' }}></div>
-                <div className="w-1 h-1 rounded-full bg-primary animate-dot-pulse" style={{ animationDelay: '0.2s' }}></div>
-                <div className="w-1 h-1 rounded-full bg-primary animate-dot-pulse" style={{ animationDelay: '0.4s' }}></div>
+              <div className="flex items-center justify-center space-x-2 px-3 py-2 text-[13px] leading-[15px]">
+                <div
+                  className="h-1 w-1 animate-dot-pulse rounded-full bg-primary"
+                  style={{ animationDelay: "0s" }}
+                ></div>
+                <div
+                  className="h-1 w-1 animate-dot-pulse rounded-full bg-primary"
+                  style={{ animationDelay: "0.2s" }}
+                ></div>
+                <div
+                  className="h-1 w-1 animate-dot-pulse rounded-full bg-primary"
+                  style={{ animationDelay: "0.4s" }}
+                ></div>
               </div>
-              </motion.div>
-            )}
+            </motion.div>
+          )}
         </div>
 
         {messages.length > 0 && <div className="h-4" />}
@@ -149,12 +161,14 @@ const AskAI = ({ isCollapsed }: { isCollapsed: boolean }) => {
             </div>
           )}
 
-          <form onSubmit={(e) => {
-            e.preventDefault()
-            handleSubmit()
-            setIsResponseLoading(true)
-          }}
-          className="flex w-full">
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleSubmit();
+              setIsResponseLoading(true);
+            }}
+            className="flex w-full"
+          >
             <input
               type="text"
               placeholder="Ask AI..."
