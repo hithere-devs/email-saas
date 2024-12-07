@@ -11,7 +11,7 @@ import { Toaster } from "sonner";
 
 export const metadata: Metadata = {
   title: "Hithere Mail",
-  description: "A modern email client with AI superpowers",
+  description: "The modern email client with AI superpowers!",
   icons: [{ rel: "icon", url: "/favicon.ico" }],
 };
 
@@ -21,6 +21,38 @@ export default function RootLayout({
   return (
     <ClerkProvider>
       <html lang="en" className={`${GeistSans.variable}`}>
+        <head>
+          <meta property="og:url" content="https://mail.hitheredevs.com" />
+          <meta property="og:type" content="website" />
+          <meta
+            property="og:title"
+            content="Hithere Mail - by hit here devs!"
+          />
+          <meta
+            property="og:description"
+            content="The modern email client with AI superpowers!"
+          />
+          <meta
+            property="og:image"
+            content="https://res.cloudinary.com/chintukepapa/image/upload/v1733589457/p5v2ygk4gmlcg03d850y.png"
+          />
+
+          <meta name="twitter:card" content="summary_large_image" />
+          <meta property="twitter:domain" content="mail.hitheredevs.com" />
+          <meta property="twitter:url" content="https://mail.hitheredevs.com" />
+          <meta
+            name="twitter:title"
+            content="Hithere Mail - by hit here devs!"
+          />
+          <meta
+            name="twitter:description"
+            content="The modern email client with AI superpowers!"
+          />
+          <meta
+            name="twitter:image"
+            content="https://res.cloudinary.com/chintukepapa/image/upload/v1733589457/p5v2ygk4gmlcg03d850y.png"
+          />
+        </head>
         <body>
           <ThemeProvider
             attribute="class"
