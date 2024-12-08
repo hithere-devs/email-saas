@@ -60,15 +60,15 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
-            {/* <TRPCReactProvider>
+            <TRPCReactProvider>
               <KBar>{children}</KBar>
               <Toaster />
-            </TRPCReactProvider> */}
-            <div className="flex h-screen w-screen items-center justify-center text-center">
+            </TRPCReactProvider>
+            {/* <div className="flex h-screen w-screen items-center justify-center text-center">
               "App is down for Maintainence, Please have some patience! <br />{" "}
               will be back up in a few hours"
               <br /> - HITHERE TEAM
-            </div>
+            </div> */}
           </ThemeProvider>
         </body>
       </html>
